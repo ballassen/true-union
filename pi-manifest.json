@@ -1,0 +1,12 @@
+{
+  "app_name": "True Union",
+  "short_name": "TrueUnion",
+  "description": "True Union — منصة الزواج الرمزي العالمية على شبكة Pi. توثيق الاتحاد بين شخصين باستخدام Pi و NFTs.",
+  "developer_name": "ballassen",
+  "icon_url": "https://ballassen.github.io/True-Union-/icon.png",
+  "app_url": "https://ballassen.github.io/True-Union-/",
+  "privacy_policy_url": "https://ballassen.github.io/True-Union-/privacy-policy.html",
+  "terms_of_service_url": "https://ballassen.github.io/True-Union-/terms-of-service.html",
+  "sdk_version": "2.0",
+  "supported_languages": ["ar", "en"]
+}
