@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="pi-archive-validation" content="0ebda2af7f8c5e4eb1194c6a4154cb016f510b54ca93df2ac251619a9b93f797872bbf358b76bb0f3eabc1fab1c3614ce707514dedff79382796f3294ef1c91">
+    <title>True Union | Pi Network</title>
+    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+    <style>
+        :root { --pi-purple: #7c4dff; --pi-gold: #ffa000; --bg-dark: #0a0a0a; --card-bg: #1e1e1e; }
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg-dark); color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; text-align: center; padding: 20px; }
+        .container { border: 2px solid var(--pi-purple); padding: 40px 30px; border-radius: 25px; background: var(--card-bg); max-width: 400px; width: 100%; box-shadow: 0 0 30px rgba(124, 77, 255, 0.3); }
+        h1 { color: var(--pi-gold); margin-bottom: 10px; }
+        .subtitle { color: #aaa; margin-bottom: 30px; font-size: 14px; }
+        .btn { display: block; width: 100%; padding: 14px; margin: 12px 0; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-login { background: var(--pi-purple); color: white; }
+        .btn-login:hover { background: #6a3de8; }
+        .btn-pay { background: var(--pi-gold); color: #000; }
+        .btn-pay:hover { background: #ff8f00; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .status { margin-top: 20px; padding: 10px; border-radius: 10px; background: #2a2a2a; font-size: 14px; min-height: 20px; }
+        .user-info { background: #2a2a2a; padding: 15px; border-radius: 12px; margin: 15px 0; display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>True Union 🚀</h1>
+        <p class="subtitle">الاتحاد الحقيقي على شبكة Pi</p>
+        <div class="user-info" id="userInfo"><div>مرحباً <span id="username"></span></div></div>
+        <button class="btn btn-login" id="loginBtn" onclick="loginWithPi()">تسجيل الدخول بـ Pi</button>
+        <button class="btn btn-pay" id="payBtn" onclick="payWithPi()" disabled>ادفع 1 Pi للتجربة</button>
+        <div class="status" id="status">جاهز للاتصال بـ Pi Network</div>
+    </div>
+    <script>
+        const Pi = window.Pi; Pi.init({ version: "2.0", sandbox: true });
+        let currentUser = null; const statusEl = document.getElementById('status'); const loginBtn = document.getElementById('loginBtn'); const payBtn = document.getElementById('payBtn'); const userInfo = document.getElementById('userInfo'); const usernameEl = document.getElementById('username');
+        async function loginWithPi() { try { statusEl.textContent = 'جاري تسجيل الدخول...'; loginBtn.disabled = true; const scopes = ['username', 'payments']; const authResult = await Pi.authenticate(scopes, onIncompletePaymentFound); currentUser = authResult.user; usernameEl.textContent = currentUser.username; userInfo.style.display = 'block'; payBtn.disabled = false; loginBtn.textContent = 'تم تسجيل الدخول ✅'; statusEl.textContent = 'تم الاتصال بنجاح'; } catch (err) { statusEl.textContent = 'فشل تسجيل الدخول: ' + err.message; loginBtn.disabled = false; } }
+        async function payWithPi() { try { statusEl.textContent = 'جاري إنشاء عملية الدفع...'; payBtn.disabled = true; await Pi.createPayment({ amount: 1, memo: "True Union Test Payment", metadata: { test: true } }, { onReadyForServerApproval: (paymentId) => { statusEl.textContent = 'بانتظار موافقة السيرفر... PaymentID: ' + paymentId; }, onReadyForServerCompletion: (paymentId, txid) => { statusEl.textContent = 'تم الدفع! TXID: ' + txid; }, onCancel: (paymentId) => { statusEl.textContent = 'تم إلغاء الدفع'; payBtn.disabled = false; }, onError: (error, payment) => { statusEl.textContent = 'خطأ: ' + error.message; payBtn.disabled = false; } }); } catch (err) { statusEl.textContent = 'فشل الدفع: ' + err.message; payBtn.disabled = false; } }
+        function onIncompletePaymentFound(payment) { console.log('Incomplete payment found:', payment); statusEl.textContent = 'يوجد دفعة غير مكتملة: ' + payment.identifier; }
+    </script>
+</body>
+</html>
